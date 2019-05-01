@@ -20,6 +20,11 @@ public class Electricity implements Serializable{
     
     public Electricity(){}
     
+    
+    public Electricity(float elpris){
+        this.elpris = elpris;
+    }
+    
     public Electricity(float el, Date date, int id, float averageEl, float maxEl, float minEl, float elpris, Date dyrastTid, Date billigastTid){
         this.el = el;
         this.date = date;

@@ -81,17 +81,19 @@ public class Service {
     @POST
     @Path("/elpris/update/{id}")
     @Produces (MediaType.APPLICATION_XML)
-    public String setNewElectricityPrice(@PathParam("id") String id){
-        d.setNewElectricityPrice(id);
-        return "nytt pris";
+    public Response setNewElectricityPrice(@PathParam("id") String id, Electricity e){
+        d.setNewElectricityPrice(id, e);
+        Response res = new Response("Updated", Boolean.FALSE);
+        res.setStatus(Boolean.TRUE);
+        return res;
     }
     
     
     @POST
     @Path("/temp/update/{id}")
     @Produces (MediaType.APPLICATION_XML)
-    public Response setNewTemperatur(@PathParam("id") String id){
-        d.setNewElectricityPrice(id);
+    public Response setNewTemperatur(@PathParam("id") String id, Kylsystem k){
+        d.setNewTemperatur(id, k);
         Response res = new Response("Updated", Boolean.FALSE);
         res.setStatus(Boolean.TRUE);
         return res;

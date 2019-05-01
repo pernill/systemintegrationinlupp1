@@ -98,8 +98,7 @@ public class serverhallDBDAO {
     }
     
     
-    public void setNewElectricityPrice(String id){
-         Electricity el = new Electricity();
+    public void setNewElectricityPrice(String id, Electricity el){
          int serverhallsId = 0;
          try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -311,8 +310,7 @@ public class serverhallDBDAO {
     }
      
      
-     public void setNewTemperatur(String id){
-         Temperatur t = new Temperatur();
+     public void setNewTemperatur(String id, Kylsystem k){
          int serverhallsId = 0;
          try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -325,10 +323,11 @@ public class serverhallDBDAO {
             while(rs.next()){
                 serverhallsId = (rs.getInt("id"));
             }
-            PreparedStatement st2 = con.prepareStatement("UPDATE kylsystem SET temperatur = ? WHERE serverhallsId =?");
+            PreparedStatement st2 = con.prepareStatement("UPDATE kylsystem SET temperatur = ?, teknikerId = ? WHERE serverhallsId=?;");
             
-            st2.setInt(1, 25);
-            st2.setFloat(2, t.getTemp());
+            st2.setInt(1, k.getTemp());
+            st2.setInt(2, k.getTeknikerId());
+            st2.setInt(3, serverhallsId);
             st2.executeUpdate();
             
         }catch (SQLException e) {
