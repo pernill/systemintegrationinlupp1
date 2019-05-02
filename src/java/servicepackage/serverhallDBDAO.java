@@ -2,22 +2,17 @@ package servicepackage;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
-
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 
-
-
 public class serverhallDBDAO {
-    
     Properties p = new Properties();
     
     public serverhallDBDAO(){
@@ -31,7 +26,6 @@ public class serverhallDBDAO {
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
     
     
@@ -57,7 +51,8 @@ public class serverhallDBDAO {
             ResultSet rs2 = st2.executeQuery();
             while(rs2.next()){
                 t.setTemp(rs2.getFloat("temperatur"));
-                t.setDate(rs2.getDate("created"));
+                Timestamp timestamp = rs2.getTimestamp("created");
+                t.setDate(new java.util.Date(timestamp.getTime()));
                 System.out.println(t.getTemp());
             }
         }catch (SQLException e) {
@@ -89,7 +84,8 @@ public class serverhallDBDAO {
             ResultSet rs2 = st2.executeQuery();
             while(rs2.next()){
                 el.setEl(rs2.getFloat("elforbrukning"));
-                el.setDate(rs2.getDate("created"));
+                Timestamp timestamp = rs2.getTimestamp("created");
+                el.setDate(new java.util.Date(timestamp.getTime()));
             }
         }catch (SQLException e) {
             e.printStackTrace();
@@ -111,7 +107,6 @@ public class serverhallDBDAO {
             while(rs.next()){
                 serverhallsId = (rs.getInt("id"));
             }
-            
 
             PreparedStatement st2 = con.prepareStatement("UPDATE electricitycost SET kostnad = ? WHERE serverhallsId =?");
             
@@ -140,21 +135,18 @@ public class serverhallDBDAO {
                 serverhallsId = (rs.getInt("id"));
             }
             
-
             PreparedStatement st2 = con.prepareStatement("SELECT kostnad, created "
                     + "from electricitycost "
                     + "WHERE serverhallsId=?;");
-            
-
             st2.setInt(1, serverhallsId);
             ResultSet rs2 = st2.executeQuery();
             
             while(rs2.next()){
                 el.setElKostnad(rs2.getFloat("kostnad"));
-                el.setDate(rs2.getDate("created"));
+                Timestamp timestamp = rs2.getTimestamp("created");
+                el.setDate(new java.util.Date(timestamp.getTime()));
                 System.out.println("Kostnad "+el.getElKostnad());
             }
-            
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -180,10 +172,10 @@ public class serverhallDBDAO {
             while(rs.next()){
                 Temperatur t = new Temperatur();
                 t.setTemp(rs.getFloat("temperatur"));
-                t.setDate(rs.getDate("created"));
+                Timestamp timestamp = rs.getTimestamp("created");
+                t.setDate(new java.util.Date(timestamp.getTime()));
                 list.add(t);
             }
-
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -195,7 +187,6 @@ public class serverhallDBDAO {
         Electricity el = new Electricity();
         try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
-            
             
             PreparedStatement st = con.prepareStatement("SELECT (avg(elforbrukning)), (max(elforbrukning)), (min(elforbrukning)) "
                     + "from electricityconsumptionlog "
@@ -222,7 +213,6 @@ public class serverhallDBDAO {
         Temperatur t = new Temperatur();
         try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
-            
             
             PreparedStatement st = con.prepareStatement("SELECT (avg(temperatur)), (max(temperatur)), (min(temperatur)) "
                     + "from temperaturelog join serverhall on serverhall.id = temperaturelog.serverhallsId "
@@ -264,7 +254,8 @@ public class serverhallDBDAO {
             while(rs.next()){
                 Electricity e = new Electricity();
                 e.setEl(rs.getFloat("electricityconsumptionlog.elforbrukning"));
-                e.setDate(rs.getDate("electricityconsumptionlog.created"));
+                Timestamp timestamp = rs.getTimestamp("electricityconsumptionlog.created");
+                e.setDate(new java.util.Date(timestamp.getTime()));
                 list.add(e);
             }
         }catch (SQLException e) {
@@ -288,7 +279,6 @@ public class serverhallDBDAO {
             while(rs.next()){
                 serverhallsId = (rs.getInt("id"));
             }
-            
 
             PreparedStatement st2 = con.prepareStatement("SELECT created "
                     + "from electricityconsumptionlog " 
@@ -297,9 +287,9 @@ public class serverhallDBDAO {
             st2.setInt(1, serverhallsId);
             ResultSet rs2 = st2.executeQuery();
             while(rs2.next()){
-                el.setDyrastTid(rs2.getDate("created"));
+                Timestamp timestamp = rs2.getTimestamp("created");
+                el.setDyrastTid(new java.util.Date(timestamp.getTime()));
             }
-            
 
             PreparedStatement st3 = con.prepareStatement("SELECT created "
                     + "from electricityconsumptionlog " 
@@ -308,7 +298,8 @@ public class serverhallDBDAO {
             st3.setInt(1, serverhallsId);
             ResultSet rs3 = st3.executeQuery();
             while(rs3.next()){
-                el.setBilligastTid(rs3.getDate("created"));
+                Timestamp timestamp = rs3.getTimestamp("created");
+                el.setBilligastTid(new java.util.Date(timestamp.getTime()));
             }
 
         }catch (SQLException e) {
