@@ -17,6 +17,7 @@ public class Electricity implements Serializable{
     private float elpris;
     private Date dyrastTid;
     private Date billigastTid;
+    private String serverhallsnamn;
     
     public Electricity(){}
     
@@ -25,7 +26,7 @@ public class Electricity implements Serializable{
         this.elpris = elpris;
     }
     
-    public Electricity(float el, Date date, int id, float averageEl, float maxEl, float minEl, float elpris, Date dyrastTid, Date billigastTid){
+    public Electricity(float el, Date date, int id, float averageEl, float maxEl, float minEl, float elpris, Date dyrastTid, Date billigastTid, String serverhallsnamn){
         this.el = el;
         this.date = date;
         this.id = id;
@@ -35,6 +36,7 @@ public class Electricity implements Serializable{
         this.elpris = elpris;
         this.dyrastTid = dyrastTid;
         this.billigastTid = billigastTid;
+        this.serverhallsnamn = serverhallsnamn;
     }
     @XmlElement 
     public void setEl(float el){
@@ -72,6 +74,10 @@ public class Electricity implements Serializable{
     public void setBilligastTid(Date billigastTid){
         this.billigastTid = billigastTid;
     }
+    @XmlElement 
+    public void setServerhallsnamn(String serverhallsnamn){
+        this.serverhallsnamn = serverhallsnamn;
+    }
     
     public float getEl(){
         return el;
@@ -107,5 +113,9 @@ public class Electricity implements Serializable{
     
     public Date getBilligastTid(){
         return billigastTid;
+    }
+    
+    public String getServerhallsnamn(){
+        return serverhallsnamn;
     }
 }

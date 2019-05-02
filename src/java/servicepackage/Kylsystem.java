@@ -11,6 +11,7 @@ public class Kylsystem implements Serializable{
     private int temperatur;
     private int serverhallsId;
     private int teknikerId;
+    private String teknikerNamn;
     
     public Kylsystem(){
         
@@ -19,6 +20,12 @@ public class Kylsystem implements Serializable{
     public Kylsystem(int temperatur, int teknikerId){
         this.temperatur = temperatur;
         this.teknikerId = teknikerId;
+    }
+    
+        public Kylsystem(int temperatur, int teknikerId, String teknikerNamn){
+        this.temperatur = temperatur;
+        this.teknikerId = teknikerId;
+        this.teknikerNamn = teknikerNamn;
     }
     
     @XmlElement 
@@ -34,6 +41,11 @@ public class Kylsystem implements Serializable{
         this.teknikerId = teknikerId;
     }
     
+    @XmlElement 
+    public void setTeknikerNamn(String teknikerNamn){
+        this.teknikerNamn = teknikerNamn;
+    }
+    
     public int getTemp(){
         return temperatur;
     }
@@ -44,5 +56,9 @@ public class Kylsystem implements Serializable{
     
     public int getTeknikerId(){
         return teknikerId;
+    }
+    
+    public String getTeknikerNamn(){
+        return teknikerNamn;
     }
 }

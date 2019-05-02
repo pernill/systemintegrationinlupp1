@@ -14,17 +14,17 @@ public class Service {
     private serverhallDBDAO d = new serverhallDBDAO();
     
     @GET
-    @Path("/temp/{id}")
+    @Path("/temp/{id}/month/{month}/day/{day}")
     @Produces (MediaType.APPLICATION_XML)
-    public List<Temperatur> getTempRapport(@PathParam("id") String id){
-        return d.getTempRapport(id);
+    public List<Temperatur> getTempRapport(@PathParam("id") String id,@PathParam("month") int month, @PathParam("day") int day){
+        return d.getTempRapport(id,month, day);
     }
     
     @GET
-    @Path("/el/{id}")
+    @Path("/el/{id}/month/{month}/day/{day}")
     @Produces (MediaType.APPLICATION_XML)
-    public List<Electricity> getElRapport(@PathParam("id") String id){
-        return d.getElRapport(id);
+    public List<Electricity> getElRapport(@PathParam("id") String id,@PathParam("month") int month, @PathParam("day") int day){
+        return d.getElRapport(id, month, day);
     }
     
     @GET
@@ -44,19 +44,19 @@ public class Service {
     }
     
     @GET
-    @Path("/maxMinAverageEl/{id}")
+    @Path("/maxMinAverageEl/{id}/month/{month}/day/{day}")
     @Produces (MediaType.APPLICATION_XML)
-    public Electricity getMaxMinAverageEl(@PathParam("id") String id){
-        Electricity e = d.getMaxMinAverageEl(id);
+    public Electricity getMaxMinAverageEl(@PathParam("id") String id, @PathParam("month") int month, @PathParam("day") int day){
+        Electricity e = d.getMaxMinAverageEl(id, month, day);
         return e;
     }
     
     
     @GET
-    @Path("/maxMinAverageTemp/{id}")
+    @Path("/maxMinAverageTemp/{id}/month/{month}/day/{day}")
     @Produces (MediaType.APPLICATION_XML)
-    public Temperatur getMaxMinAverageTemp(@PathParam("id") String id){
-        Temperatur t = d.getMaxMinAverageTemp(id);
+    public Temperatur getMaxMinAverageTemp(@PathParam("id") String id, @PathParam("month") int month, @PathParam("day") int day){
+        Temperatur t = d.getMaxMinAverageTemp(id, month, day);
         return t;
     }
     
@@ -97,6 +97,24 @@ public class Service {
         Response res = new Response("Updated", Boolean.FALSE);
         res.setStatus(Boolean.TRUE);
         return res;
+    }
+    
+    
+    @GET
+    @Path("/kylsysteminfo/{id}")
+    @Produces (MediaType.APPLICATION_XML)
+    public Kylsystem getKylsystemInfo(@PathParam("id") String id){
+        Kylsystem k = d.getKylsystemInfo(id);
+        return k;
+    }
+    
+    
+    @GET
+    @Path("/highestconsumption{month}/day/{day}")
+    @Produces (MediaType.APPLICATION_XML)
+    public Electricity getHighestConsumption(@PathParam("month") int month, @PathParam("day") int day){
+        Electricity e = d.getHighestConsumption(month, day);
+        return e;
     }
     
     

@@ -162,7 +162,7 @@ public class serverhallDBDAO {
     }
     
 
-    public List<Temperatur> getTempRapport(String id){
+    public List<Temperatur> getTempRapport(String id, int month, int day){
          List<Temperatur> list = new ArrayList<>();
          try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -171,16 +171,17 @@ public class serverhallDBDAO {
                     + "from temperaturelog "
                     + "join serverhall on serverhall.id = temperaturelog.serverhallsId "
                     + "join location on location.id = serverhall.serverhallsId "
-                    + "WHERE location.namn=?;");
+                    + "WHERE month(created) =? and day(created) =? and location.namn=?;");
             
-            st.setString(1, id);
+            st.setInt(1, month);
+            st.setInt(2, day);
+            st.setString(3, id);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 Temperatur t = new Temperatur();
                 t.setTemp(rs.getFloat("temperatur"));
                 t.setDate(rs.getDate("created"));
                 list.add(t);
-                System.out.println(t.getDate()+" "+t.getId()+" " +t.getTemp());
             }
 
         }catch (SQLException e) {
@@ -190,7 +191,7 @@ public class serverhallDBDAO {
     }
     
     
-    public Electricity getMaxMinAverageEl(String id){
+    public Electricity getMaxMinAverageEl(String id, int month, int day){
         Electricity el = new Electricity();
         try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -200,8 +201,10 @@ public class serverhallDBDAO {
                     + "from electricityconsumptionlog "
                     + "join serverhall on serverhall.id = electricityconsumptionlog.serverhallsId " 
                     + "join location on location.id = serverhall.serverhallsId " 
-                    + "WHERE location.namn=?;");
-            st.setString(1, id);
+                    + "WHERE month(created) =? and day(created) =? and location.namn=?;");
+            st.setInt(1, month);
+            st.setInt(2, day);
+            st.setString(3, id);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 el.setAverageEl(rs.getFloat("(avg(elforbrukning))"));
@@ -215,7 +218,7 @@ public class serverhallDBDAO {
     }
     
     
-    public Temperatur getMaxMinAverageTemp(String id){
+    public Temperatur getMaxMinAverageTemp(String id, int month, int day){
         Temperatur t = new Temperatur();
         try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -224,9 +227,11 @@ public class serverhallDBDAO {
             PreparedStatement st = con.prepareStatement("SELECT (avg(temperatur)), (max(temperatur)), (min(temperatur)) "
                     + "from temperaturelog join serverhall on serverhall.id = temperaturelog.serverhallsId "
                     + "join location on location.id = serverhall.serverhallsId "
-                    + "WHERE location.namn=? ;");
+                    + "WHERE month(created) =? and day(created) =? and location.namn=? ;");
 
-            st.setString(1, id);
+            st.setInt(1, month);
+            st.setInt(2, day);
+            st.setString(3, id);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 t.setAverageTemp(rs.getFloat("(avg(temperatur))"));
@@ -241,7 +246,7 @@ public class serverhallDBDAO {
     
     
     
-    public List<Electricity> getElRapport(String id){
+    public List<Electricity> getElRapport(String id, int month, int day){
          List<Electricity> list = new ArrayList<>();
          try(Connection con = DriverManager.getConnection(p.getProperty("connection"),
                 p.getProperty("name"), p.getProperty("password"))){
@@ -250,8 +255,11 @@ public class serverhallDBDAO {
                     + "from electricityconsumptionlog " 
                     + "join serverhall on serverhall.id = electricityconsumptionlog.serverhallsId " 
                     + "join location on location.id = serverhall.serverhallsId " 
-                    + "WHERE location.namn=?;");
-            st.setString(1, id);
+                    + "WHERE month(created) =? and day(created) =? and location.namn=?;");
+           
+            st.setInt(1, month);
+            st.setInt(2, day);
+            st.setString(3, id);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 Electricity e = new Electricity();
@@ -287,9 +295,9 @@ public class serverhallDBDAO {
                     + "WHERE elforbrukning = (SELECT max(elforbrukning)from electricityconsumptionlog WHERE serverhallsId=?);");
             
             st2.setInt(1, serverhallsId);
-            ResultSet rs3 = st2.executeQuery();
-            while(rs3.next()){
-                el.setDyrastTid(rs3.getDate("created"));
+            ResultSet rs2 = st2.executeQuery();
+            while(rs2.next()){
+                el.setDyrastTid(rs2.getDate("created"));
             }
             
 
@@ -298,9 +306,9 @@ public class serverhallDBDAO {
                     + "WHERE elforbrukning = (SELECT min(elforbrukning)from electricityconsumptionlog WHERE serverhallsId=?);");
 
             st3.setInt(1, serverhallsId);
-            ResultSet rs4 = st3.executeQuery();
-            while(rs4.next()){
-                el.setBilligastTid(rs4.getDate("created"));
+            ResultSet rs3 = st3.executeQuery();
+            while(rs3.next()){
+                el.setBilligastTid(rs3.getDate("created"));
             }
 
         }catch (SQLException e) {
@@ -333,6 +341,66 @@ public class serverhallDBDAO {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+     
+     
+    public Kylsystem getKylsystemInfo(String id){
+        Kylsystem k = new Kylsystem();
+        int serverhallsId = 0;
+         try(Connection con = DriverManager.getConnection(
+           p.getProperty("connection"), p.getProperty("name"), p.getProperty("password"));){
+            PreparedStatement st = con.prepareStatement("SELECT id "
+                    + "from location "
+                    + "WHERE location.namn=?");
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                serverhallsId = (rs.getInt("id"));
+            }
+             
+            PreparedStatement st2 = con.prepareStatement("SELECT kylsystem.temperatur, kyltekniker.namn "
+                     + "from kylsystem "
+                     + "join kyltekniker on kyltekniker.id = kylsystem.teknikerId "
+                     + "WHERE serverhallsId =?;");
+            
+            st2.setInt(1, serverhallsId);
+            ResultSet rs2 = st2.executeQuery();
+            while(rs2.next()){
+                k.setTemp(rs2.getInt("kylsystem.temperatur"));
+                k.setTeknikerNamn(rs2.getString("kyltekniker.namn"));
+            }
+             
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+         return k;
+    }
+    
+    
+    public Electricity getHighestConsumption(int month, int day){
+        Electricity el = new Electricity();
+        try(Connection con = DriverManager.getConnection(
+           p.getProperty("connection"), p.getProperty("name"), p.getProperty("password"));){
+           PreparedStatement st = con.prepareStatement("SELECT SUM(elforbrukning), location.namn "
+                   + "FROM electricityconsumptionlog "
+                   + "join serverhall on serverhall.id = electricityconsumptionlog.serverhallsId "
+                   + "join location on location.id = serverhall.serverhallsId "
+                   + "where month(created) =? and day(created) =? "
+                   + "GROUP BY electricityconsumptionlog.serverhallsId "
+                   + "Order by sum(elforbrukning) desc limit 1;");
+            
+            st.setInt(1, month);
+            st.setInt(2, day);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+               el.setEl(rs.getFloat("SUM(elforbrukning)"));
+               el.setServerhallsnamn(rs.getString("location.namn"));
+            }     
+             
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return el;
     }
      
      
