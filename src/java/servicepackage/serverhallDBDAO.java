@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -108,10 +110,11 @@ public class serverhallDBDAO {
                 serverhallsId = (rs.getInt("id"));
             }
 
-            PreparedStatement st2 = con.prepareStatement("UPDATE electricitycost SET kostnad = ? WHERE serverhallsId =?");
-            
+            PreparedStatement st2 = con.prepareStatement("UPDATE electricitycost SET kostnad =?, created =? WHERE serverhallsId =?");
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             st2.setFloat(1, el.getElKostnad());
-            st2.setInt(2, serverhallsId);
+            st2.setString(2, timeStamp);
+            st2.setInt(3, serverhallsId);
             st2.executeUpdate();
             
         }catch (SQLException e) {
@@ -322,11 +325,13 @@ public class serverhallDBDAO {
             while(rs.next()){
                 serverhallsId = (rs.getInt("id"));
             }
-            PreparedStatement st2 = con.prepareStatement("UPDATE kylsystem SET temperatur = ?, teknikerId = ? WHERE serverhallsId=?;");
+            PreparedStatement st2 = con.prepareStatement("UPDATE kylsystem SET temperatur = ?, created=?, teknikerId = ? WHERE serverhallsId=?;");
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             
             st2.setInt(1, k.getTemp());
-            st2.setInt(2, k.getTeknikerId());
-            st2.setInt(3, serverhallsId);
+            st2.setString(2, timeStamp);
+            st2.setInt(3, k.getTeknikerId());
+            st2.setInt(4, serverhallsId);
             st2.executeUpdate();
             
         }catch (SQLException e) {
@@ -349,7 +354,7 @@ public class serverhallDBDAO {
                 serverhallsId = (rs.getInt("id"));
             }
              
-            PreparedStatement st2 = con.prepareStatement("SELECT kylsystem.temperatur, kyltekniker.namn "
+            PreparedStatement st2 = con.prepareStatement("SELECT kylsystem.temperatur, kyltekniker.namn, kyltekniker.created "
                      + "from kylsystem "
                      + "join kyltekniker on kyltekniker.id = kylsystem.teknikerId "
                      + "WHERE serverhallsId =?;");
@@ -359,6 +364,8 @@ public class serverhallDBDAO {
             while(rs2.next()){
                 k.setTemp(rs2.getInt("kylsystem.temperatur"));
                 k.setTeknikerNamn(rs2.getString("kyltekniker.namn"));
+                Timestamp timestamp = rs2.getTimestamp("kyltekniker.created");
+                k.setDate(new java.util.Date(timestamp.getTime()));
             }
              
         }catch (SQLException e) {
@@ -385,7 +392,7 @@ public class serverhallDBDAO {
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                el.setEl(rs.getFloat("SUM(elforbrukning)"));
-               el.setServerhallsnamn(rs.getString("location.namn"));
+               el.setServerhallsNamn(rs.getString("location.namn"));
             }     
              
         }catch (SQLException e) {

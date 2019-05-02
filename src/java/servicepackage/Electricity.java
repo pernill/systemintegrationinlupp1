@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "electricity") 
-public class Electricity implements Serializable{
+public class Electricity extends Serverhall implements Serializable{
     private static final long serialVersionUID = 1L;
     private float el;
     private Date date;
@@ -20,7 +20,7 @@ public class Electricity implements Serializable{
     private float elpris;
     private Date dyrastTid;
     private Date billigastTid;
-    private String serverhallsnamn;
+    
     
     public Electricity(){}
     
@@ -29,7 +29,8 @@ public class Electricity implements Serializable{
         this.elpris = elpris;
     }
     
-    public Electricity(float el, Date date, int id, float averageEl, float maxEl, float minEl, float elpris, Date dyrastTid, Date billigastTid, String serverhallsnamn){
+    public Electricity(String serverhallsnamn, float el, Date date, int id, float averageEl, float maxEl, float minEl, float elpris, Date dyrastTid, Date billigastTid){
+        super(serverhallsnamn);
         this.el = el;
         this.date = date;
         this.id = id;
@@ -39,7 +40,7 @@ public class Electricity implements Serializable{
         this.elpris = elpris;
         this.dyrastTid = dyrastTid;
         this.billigastTid = billigastTid;
-        this.serverhallsnamn = serverhallsnamn;
+        
     }
     @XmlElement 
     public void setEl(float el){
@@ -76,10 +77,6 @@ public class Electricity implements Serializable{
     @XmlElement 
     public void setBilligastTid(Date billigastTid){
         this.billigastTid = billigastTid;
-    }
-    @XmlElement 
-    public void setServerhallsnamn(String serverhallsnamn){
-        this.serverhallsnamn = serverhallsnamn;
     }
     
     public float getEl(){
@@ -118,11 +115,8 @@ public class Electricity implements Serializable{
         return billigastTid;
     }
     
-    public String getServerhallsnamn(){
-        return serverhallsnamn;
-    }
     
-        public String getOurTimeZone(Date d){
+    public String getOurTimeZone(Date d){
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df.format(d);

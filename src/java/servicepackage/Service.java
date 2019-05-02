@@ -82,7 +82,7 @@ public class Service {
     @Produces (MediaType.APPLICATION_XML)
     public Response setNewElectricityPrice(@PathParam("id") String id, Electricity e){
         d.setNewElectricityPrice(id, e);
-        Response res = new Response("Updated", Boolean.FALSE);
+        Response res = new Response("Kw-pris uppdaterat", Boolean.FALSE);
         res.setStatus(Boolean.TRUE);
         return res;
     }
@@ -93,7 +93,7 @@ public class Service {
     @Produces (MediaType.APPLICATION_XML)
     public Response setNewTemperatur(@PathParam("id") String id, Kylsystem k){
         d.setNewTemperatur(id, k);
-        Response res = new Response("Updated", Boolean.FALSE);
+        Response res = new Response("Temperaturinställning uppdaterad", Boolean.FALSE);
         res.setStatus(Boolean.TRUE);
         return res;
     }
@@ -122,7 +122,7 @@ public class Service {
     @Produces (MediaType.APPLICATION_XML)
     public Response addTekniker(Tekniker t){
         d.addTekniker(t);
-        Response res = new Response("Updated", Boolean.FALSE);
+        Response res = new Response("Tekniker tillagd", Boolean.FALSE);
         res.setStatus(Boolean.TRUE);
         return res;
     }

@@ -1,7 +1,10 @@
 package servicepackage;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,6 +15,7 @@ public class Kylsystem implements Serializable{
     private int serverhallsId;
     private int teknikerId;
     private String teknikerNamn;
+    private Date date;
     
     public Kylsystem(){
         
@@ -22,10 +26,11 @@ public class Kylsystem implements Serializable{
         this.teknikerId = teknikerId;
     }
     
-        public Kylsystem(int temperatur, int teknikerId, String teknikerNamn){
+        public Kylsystem(int temperatur, int teknikerId, String teknikerNamn, Date date){
         this.temperatur = temperatur;
         this.teknikerId = teknikerId;
         this.teknikerNamn = teknikerNamn;
+        this.date = date;
     }
     
     @XmlElement 
@@ -46,6 +51,11 @@ public class Kylsystem implements Serializable{
         this.teknikerNamn = teknikerNamn;
     }
     
+    @XmlElement 
+    public void setDate(Date date){
+        this.date = date;
+    }
+    
     public int getTemp(){
         return temperatur;
     }
@@ -60,5 +70,15 @@ public class Kylsystem implements Serializable{
     
     public String getTeknikerNamn(){
         return teknikerNamn;
+    }
+    
+    public Date getDate(){
+        return date;
+    }
+    
+    public String getOurTimeZone(Date d){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return df.format(d);
     }
 }
