@@ -81,7 +81,7 @@ public class serverhallDBDAO {
             
             PreparedStatement st2 = con.prepareStatement("SELECT elforbrukning, created "
                     + "from electricityconsumptionlog "
-                    + "WHERE id = (SELECT max(id)from temperaturelog WHERE serverhallsId=?);");
+                    + "WHERE id = (SELECT max(id)from electricityconsumptionlog WHERE serverhallsId=?);");
             st2.setInt(1, serverhallsId);
             ResultSet rs2 = st2.executeQuery();
             while(rs2.next()){

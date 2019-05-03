@@ -28,6 +28,13 @@ public class Temperatur implements Serializable{
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
     }
+    
+    public Temperatur(float temp, Date date, int id){
+        this.temp = temp;
+        this.date = date;
+        this.id = id;
+    }
+    
     @XmlElement 
     public void setTemp(float temp){
         this.temp = temp;
